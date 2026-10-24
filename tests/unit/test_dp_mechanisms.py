@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import logging
 import math
 import random
@@ -46,7 +47,7 @@ def test_gaussian_delta_extreme_tail() -> None:
 def test_laplace_rdp_properties() -> None:
     eps = 1.0
     curve = [am.laplace_rdp(eps, a) for a in am.RDP_ORDERS]
-    assert all(x <= y + 1e-12 for x, y in zip(curve, curve[1:], strict=False))  # non-decreasing in alpha
+    assert all(x <= y + 1e-12 for x, y in itertools.pairwise(curve))  # non-decreasing in alpha
     assert curve[-1] == pytest.approx(eps, rel=1e-2)  # tends to eps as alpha -> inf
     assert all(c <= eps + 1e-12 for c in curve)
     assert am.pure_dp_rdp(1.0, 2.0) == 1.0 and am.pure_dp_rdp(0.1, 2.0) == pytest.approx(0.01)

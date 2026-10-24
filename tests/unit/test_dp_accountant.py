@@ -103,7 +103,12 @@ def test_persistence_roundtrip(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize(
     "content",
-    ["not json", "[]", '{"budget": 3}', '{"budget": {"epsilon": 1}, "charges": [{"label": "x", "mechanism": "m", "epsilon": "a", "delta": 0}]}'],
+    [
+        "not json",
+        "[]",
+        '{"budget": 3}',
+        '{"budget": {"epsilon": 1}, "charges": [{"label": "x", "mechanism": "m", "epsilon": "a", "delta": 0}]}',
+    ],
 )
 def test_malformed_ledgers(tmp_path: Path, content: str) -> None:
     path = tmp_path / "bad.json"

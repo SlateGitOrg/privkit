@@ -34,8 +34,12 @@ def test_labeled_values_are_valid_by_construction() -> None:
 
 
 def test_split_name_pools_are_disjoint() -> None:
-    dev_people = {d.text[s.start : s.end] for d in generate_corpus("dev", 300, 1) for s in d.spans if s.entity == "PERSON"}
-    test_people = {d.text[s.start : s.end] for d in generate_corpus("test", 300, 1) for s in d.spans if s.entity == "PERSON"}
+    dev_people = {
+        d.text[s.start : s.end] for d in generate_corpus("dev", 300, 1) for s in d.spans if s.entity == "PERSON"
+    }
+    test_people = {
+        d.text[s.start : s.end] for d in generate_corpus("test", 300, 1) for s in d.spans if s.entity == "PERSON"
+    }
     assert dev_people and test_people and dev_people.isdisjoint(test_people)
 
 

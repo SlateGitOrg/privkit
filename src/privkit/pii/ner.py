@@ -9,8 +9,8 @@ the model being installed.
 from __future__ import annotations
 
 import importlib
-from collections.abc import Iterable, Mapping
-from typing import Any, Protocol
+from collections.abc import Callable, Iterable, Mapping
+from typing import Protocol, cast
 
 from privkit.errors import OptionalDependencyError
 from privkit.pii.model import Entity, Finding
@@ -42,7 +42,7 @@ class SpacyNerRecognizer:
 
     def __init__(
         self,
-        nlp: Any = None,
+        nlp: Callable[[str], _Doc] | None = None,
         *,
         model: str = "en_core_web_sm",
         score: float = 0.7,
@@ -55,7 +55,7 @@ class SpacyNerRecognizer:
         self.label_map = dict(label_map)
 
     def find(self, text: str) -> list[Finding]:
-        doc: _Doc = self._nlp(text)
+        doc = self._nlp(text)
         out = []
         for ent in doc.ents:
             entity = self.label_map.get(ent.label_)
@@ -75,14 +75,16 @@ class SpacyNerRecognizer:
         return out
 
 
-def load_spacy_model(model: str) -> Any:
+def load_spacy_model(model: str) -> Callable[[str], _Doc]:
     """Import spaCy and load ``model``; raises :class:`OptionalDependencyError` if unavailable."""
     try:
         spacy = importlib.import_module("spacy")
     except ImportError as exc:
         raise OptionalDependencyError("spaCy is not installed; run `uv sync --extra ner`") from exc
     try:
-        return spacy.load(model, disable=["lemmatizer", "tagger", "parser", "attribute_ruler"])
+        return cast(
+            "Callable[[str], _Doc]", spacy.load(model, disable=["lemmatizer", "tagger", "parser", "attribute_ruler"])
+        )
     except OSError as exc:
         raise OptionalDependencyError(f"spaCy model {model!r} is not installed; run `make ner-model`") from exc
 

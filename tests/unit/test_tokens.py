@@ -27,6 +27,7 @@ def tok() -> Tokenizer:
         ("123-45-6789", "US_SSN"),
         ("(415) 555-0132", "PHONE"),
         ("jane.doe+news@example.co.uk", "EMAIL"),
+        ("ab@example.org", "EMAIL_FULL"),
         ("DE89 3704 0044 0532 0130 00", "IBAN"),
         ("10.0.0.7", "IP_ADDRESS"),
         ("fe80::1ff:fe23:4567:890a", "IP_ADDRESS"),

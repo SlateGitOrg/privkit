@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import random
+from collections.abc import Callable
 
 import pytest
 from hypothesis import given, settings
@@ -9,6 +10,7 @@ from hypothesis import strategies as st
 
 from privkit.errors import ConfigurationError, InvalidInputError
 from privkit.kanon import (
+    Hierarchy,
     IntervalHierarchy,
     MappingHierarchy,
     MaskingHierarchy,
@@ -33,9 +35,14 @@ TABLE = [
 def synthetic(n: int, seed: int = 1) -> list[dict[str, str]]:
     r = random.Random(seed)
     return [
-        {"age": str(r.randint(18, 90)), "zip": f"0213{r.randint(0, 9)}", "sex": r.choice("MF"), "dx": r.choice(["flu", "cold", "hiv", "asthma"])}
+        {
+            "age": str(r.randint(18, 90)),
+            "zip": f"0213{r.randint(0, 9)}",
+            "sex": r.choice("MF"),
+            "dx": r.choice(["flu", "cold", "hiv", "asthma"]),
+        }
         for _ in range(n)
-    ]  # fmt: skip
+    ]
 
 
 def test_assess_counts_classes_and_risk() -> None:
@@ -94,7 +101,13 @@ def test_hierarchies() -> None:
     assert sup.generalize("F", 0) == "F" and sup.generalize("F", 1) == "*"
     with pytest.raises(InvalidInputError):
         age.generalize("1", 9)
-    for bad in [lambda: IntervalHierarchy(()), lambda: IntervalHierarchy((10, 5)), lambda: MaskingHierarchy(0), lambda: MappingHierarchy([])]:
+    bad_builders: list[Callable[[], object]] = [
+        lambda: IntervalHierarchy(()),
+        lambda: IntervalHierarchy((10, 5)),
+        lambda: MaskingHierarchy(0),
+        lambda: MappingHierarchy([]),
+    ]
+    for bad in bad_builders:
         with pytest.raises(ConfigurationError):
             bad()
 
@@ -110,7 +123,11 @@ def test_parse_hierarchy() -> None:
 
 def test_generalize_reaches_k_with_minimal_loss() -> None:
     rows = synthetic(1000)
-    hier = {"age": IntervalHierarchy((5, 10, 20)), "zip": MaskingHierarchy(3), "sex": SuppressionHierarchy()}
+    hier: dict[str, Hierarchy] = {
+        "age": IntervalHierarchy((5, 10, 20)),
+        "zip": MaskingHierarchy(3),
+        "sex": SuppressionHierarchy(),
+    }
     res = generalize_to_k(rows, hier, 5, max_suppression=0.02)
     after = assess(res.rows, list(hier), k=5)
     assert after.satisfies_k and res.suppressed <= 20 and len(res.rows) == 1000 - res.suppressed
@@ -119,7 +136,7 @@ def test_generalize_reaches_k_with_minimal_loss() -> None:
 
 def test_generalize_minimality_bruteforce_small() -> None:
     rows = synthetic(60, seed=3)
-    hier = {"age": IntervalHierarchy((10, 30)), "sex": SuppressionHierarchy()}
+    hier: dict[str, Hierarchy] = {"age": IntervalHierarchy((10, 30)), "sex": SuppressionHierarchy()}
     res = generalize_to_k(rows, hier, 3)
     feasible_losses = []
     for a, s in itertools.product(range(4), range(2)):

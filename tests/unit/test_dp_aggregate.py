@@ -54,7 +54,6 @@ def test_sum_and_mean_clamp_values() -> None:
     assert abs(mean.value - 10.0) < 0.5 and 0 <= mean.value <= 20 and mean.ci95 > 0
 
 
-
 def test_mean_of_empty_partition_stays_in_range() -> None:
     res = agg().mean([], lower=5, upper=7, epsilon=1.0, public_partitions=["x"])
     assert 5 <= res.partitions["x"].value <= 7
@@ -108,7 +107,9 @@ def test_budget_is_charged_once_and_refusal_releases_nothing() -> None:
 
 def test_mean_splits_budget_into_two_charges() -> None:
     acct = PrivacyAccountant(1.0)
-    DPAggregator(acct, rng=random.Random(4)).mean([(1, "x", 1.0)], lower=0, upper=2, epsilon=1.0, public_partitions=["x"])
+    DPAggregator(acct, rng=random.Random(4)).mean(
+        [(1, "x", 1.0)], lower=0, upper=2, epsilon=1.0, public_partitions=["x"]
+    )
     assert [c.label for c in acct.ledger] == ["mean:count", "mean:centered_sum"]
     assert [c.cost.epsilon for c in acct.ledger] == [0.5, 0.5]
 

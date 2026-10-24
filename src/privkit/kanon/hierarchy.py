@@ -28,6 +28,10 @@ def _check_level(level: int, height: int) -> None:
         raise InvalidInputError(f"generalization level {level} outside [0, {height}]")
 
 
+def _fmt_bound(value: float, width: float) -> str:
+    return str(int(value)) if float(width).is_integer() else f"{value:g}"
+
+
 @dataclass(frozen=True)
 class IntervalHierarchy:
     """Numeric values bucketed into intervals of increasing width, e.g. widths (5, 10, 20)."""
@@ -54,9 +58,7 @@ class IntervalHierarchy:
             return SUPPRESSED
         w = self.widths[level - 1]
         lo = math.floor(x / w) * w
-        hi = lo + w
-        fmt = (lambda v: str(int(v))) if float(w).is_integer() else (lambda v: f"{v:g}")
-        return f"[{fmt(lo)}-{fmt(hi)})"
+        return f"[{_fmt_bound(lo, w)}-{_fmt_bound(lo + w, w)})"
 
 
 @dataclass(frozen=True)

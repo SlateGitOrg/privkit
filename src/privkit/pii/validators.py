@@ -30,6 +30,7 @@ def _accept(ok: bool, text: str) -> int | None:
 
 # --- payment cards ---------------------------------------------------------
 
+
 def _iin_matches(number: str) -> bool:
     """Issuer identification number (prefix) and length rules of the major networks."""
     n = len(number)
@@ -96,6 +97,7 @@ def intl_phone(text: str) -> int | None:
 
 # --- other national identifiers ----------------------------------------------
 
+
 def in_aadhaar(text: str) -> int | None:
     number = digits_only(text)
     return _accept(len(number) == 12 and number[0] not in "01" and verhoeff_valid(number), text)
@@ -131,6 +133,7 @@ def iban(text: str) -> int | None:
 
 
 # --- network identifiers -------------------------------------------------------
+
 
 def ipv4(text: str) -> int | None:
     try:

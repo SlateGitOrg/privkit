@@ -4,9 +4,15 @@ from privkit.pii import Detector, scan_columns
 from privkit.pii.structured import header_words
 
 ROWS = [
-    {"id": str(i), "contact_email": f"user{i}@example.com", "ssn": f"{100 + i}-45-67{10 + i}", "tax_id": f"12345{6000 + i}", "note": "ok"}
+    {
+        "id": str(i),
+        "contact_email": f"user{i}@example.com",
+        "ssn": f"{100 + i}-45-67{10 + i}",
+        "tax_id": f"12345{6000 + i}",
+        "note": "ok",
+    }
     for i in range(20)
-]  # fmt: skip
+]
 
 
 def test_scan_columns_classifies() -> None:

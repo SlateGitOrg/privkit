@@ -26,7 +26,8 @@ def _chi_square_vs_pmf(samples: list[int], pmf: dict[int, float]) -> float:
     n = len(samples)
     counts = Counter(samples)
     support = sorted(pmf)
-    observed, expected = [], []
+    observed: list[float] = []
+    expected: list[float] = []
     tail_obs, tail_exp = 0.0, 0.0
     for z in support:
         e = pmf[z] * n

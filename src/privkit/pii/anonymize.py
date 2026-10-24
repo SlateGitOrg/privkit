@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import itertools
 import logging
 import re
 from collections.abc import Mapping, Sequence
@@ -91,7 +92,9 @@ class Tokenize:
         except PrivkitError as exc:
             if self.on_error == "raise":
                 raise
-            logger.warning("tokenization of a %s finding failed (%s); redacting instead", finding.entity, type(exc).__name__)
+            logger.warning(
+                "tokenization of a %s finding failed (%s); redacting instead", finding.entity, type(exc).__name__
+            )
             return f"<{finding.entity}>"
         return f"[[{finding.entity}:{token}]]" if self.tagged else token
 
@@ -123,7 +126,7 @@ def anonymize(
     ops = dict(operators or {})
     fallback: Operator = default if default is not None else Redact()
     ordered = sorted(findings, key=lambda f: f.start)
-    for prev, cur in zip(ordered, ordered[1:], strict=False):
+    for prev, cur in itertools.pairwise(ordered):
         if cur.start < prev.end:
             raise InvalidInputError("findings overlap; resolve overlaps before anonymizing")
     parts: list[str] = []

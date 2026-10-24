@@ -73,7 +73,9 @@ class Detector:
     def entities(self) -> frozenset[str]:
         return frozenset(r.entity.value for r in self.recognizers)
 
-    def _context_words(self, text: str, start: int, end: int, hint: frozenset[str]) -> tuple[frozenset[str], frozenset[str]]:
+    def _context_words(
+        self, text: str, start: int, end: int, hint: frozenset[str]
+    ) -> tuple[frozenset[str], frozenset[str]]:
         """Return (positive-context words, negative-context words) around a candidate.
 
         Context never crosses a sentence boundary or another numeric value. Negative context (for example
@@ -118,7 +120,9 @@ class Detector:
                     evidence.append("context:-" + ",".join(sorted(misses)))
                 score = min(max(score, 0.0), 1.0)
                 if score >= self.threshold:
-                    found.append(Finding(rec.entity.value, start, end, score, rec.name, text[start:end], tuple(evidence)))
+                    found.append(
+                        Finding(rec.entity.value, start, end, score, rec.name, text[start:end], tuple(evidence))
+                    )
         for span_rec in self.extra:
             for f in span_rec.find(text):
                 if (entities is None or f.entity in entities) and f.score >= self.threshold:

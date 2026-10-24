@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import contextlib
 import os
 import secrets
 
@@ -27,10 +28,8 @@ def parse_key(text: str) -> bytes:
     """Parse a 128/192/256-bit key given as hex or (url-safe) base64."""
     raw = text.strip()
     candidates: list[bytes] = []
-    try:
+    with contextlib.suppress(ValueError):
         candidates.append(bytes.fromhex(raw))
-    except ValueError:
-        pass
     for decoder in (base64.b64decode, base64.urlsafe_b64decode):
         try:
             candidates.append(decoder(raw + "=" * (-len(raw) % 4)))

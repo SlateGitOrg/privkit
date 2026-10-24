@@ -113,8 +113,11 @@ DEFAULT_POLICIES: dict[str, TokenPolicy] = {
         TokenPolicy("US_ABA_ROUTING", DIGITS),
         TokenPolicy("IN_AADHAAR", DIGITS),
         TokenPolicy("UK_NHS", DIGITS),
-        TokenPolicy("DATE_OF_BIRTH", DIGITS),
+        # Dates such as "August 7, 1962" hold only 5 digits (< 10^6), so letters are encrypted too.
+        TokenPolicy("DATE_OF_BIRTH", ALNUM),
         TokenPolicy("EMAIL", ALNUM, span_pattern=r"^([^@]+)@"),
+        # Also encrypts the domain labels (keeps the TLD): works for very short local parts.
+        TokenPolicy("EMAIL_FULL", ALNUM, span_pattern=r"^(.+)\.[A-Za-z]{2,24}$"),
         TokenPolicy("IBAN", ALNUM_UPPER, keep_prefix=4, normalize=Normalize.UPPER),
         TokenPolicy("MAC_ADDRESS", HEX_LOWER, normalize=Normalize.LOWER),
         TokenPolicy("IP_ADDRESS", codec=Codec.IP),

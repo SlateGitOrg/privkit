@@ -265,10 +265,14 @@ class DPAggregator:
         l0, linf = bounds.max_partitions, bounds.max_per_partition
         mechs: list[tuple[str, Mechanism]] = []
         if metric is Metric.COUNT:
-            mechs.append(("count", self._mechanism(noise, eps_query, delta_query, l0 * linf, math.sqrt(l0) * linf, True)))
+            mechs.append(
+                ("count", self._mechanism(noise, eps_query, delta_query, l0 * linf, math.sqrt(l0) * linf, True))
+            )
         elif metric is Metric.SUM:
             m = linf * max(abs(lo), abs(hi))
-            integer = float(lo).is_integer() and float(hi).is_integer() and all(float(v).is_integer() for _, _, v in kept)
+            integer = (
+                float(lo).is_integer() and float(hi).is_integer() and all(float(v).is_integer() for _, _, v in kept)
+            )
             mechs.append(("sum", self._mechanism(noise, eps_query, delta_query, l0 * m, math.sqrt(l0) * m, integer)))
         else:
             half = linf * (hi - lo) / 2
@@ -277,15 +281,14 @@ class DPAggregator:
             mechs.append(("centered_sum", self._mechanism(noise, e2, d2, l0 * half, math.sqrt(l0) * half, False)))
 
         charges: list[Charge] = [charge_for(mech, f"{label}:{part}") for part, mech in mechs]
-        sel_scale: Fraction | None = None
-        sel_k = 0
+        selection: tuple[Fraction, int] | None = None
         if select:
-            sel_scale, sel_k = selection_threshold(eps_sel, delta_sel, l0)
+            selection = selection_threshold(eps_sel, delta_sel, l0)
             charges.append(Charge(f"{label}:partition_selection", "laplace_threshold", PrivacyCost(eps_sel, delta_sel)))
         cost = self.accountant.charge(*charges)  # raises before any noisy value exists
 
-        if select:
-            assert sel_scale is not None
+        if selection is not None:
+            sel_scale, sel_k = selection
             partitions = [p for p in units if len(units[p]) + discrete_laplace(sel_scale, self.rng) >= 1 + sel_k]
         else:
             partitions = list(dict.fromkeys(public_partitions or ()))
@@ -293,9 +296,7 @@ class DPAggregator:
         released: dict[Hashable, ReleasedValue] = {}
         for p in partitions:
             released[p] = self._release(metric, mechs, counts.get(p, 0), sums.get(p, 0.0), lo, hi, mid)
-        return DPResult(
-            metric, noise, released, cost, bounds, value_range, select, tuple(m.name for _, m in mechs)
-        )
+        return DPResult(metric, noise, released, cost, bounds, value_range, select, tuple(m.name for _, m in mechs))
 
     @staticmethod
     def _release(

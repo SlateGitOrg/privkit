@@ -41,7 +41,9 @@ _CARD_CTX = _words("card", "credit", "debit", "visa", "mastercard", "amex", "cc"
 _PHONE_CTX = _words("phone", "call", "tel", "telephone", "mobile", "cell", "fax", "sms", "text", "whatsapp", "contact")
 _SSN_CTX = _words("ssn", "social", "security", "ss", "taxpayer", "tin", "itin")
 _ABA_CTX = _words("routing", "aba", "rtn", "transit", "ach", "wire")
-_IP_CTX = _words("ip", "ipv4", "ipv6", "address", "host", "server", "client", "from", "src", "dst", "login", "connected")
+_IP_CTX = _words(
+    "ip", "ipv4", "ipv6", "address", "host", "server", "client", "from", "src", "dst", "login", "connected"
+)
 _IP_NEG = _words("version", "v", "ver", "release", "build", "firmware", "sdk", "oid", "section", "chapter")
 _DOB_CTX = _words("born", "dob", "birth", "birthday", "birthdate", "age")
 _AADHAAR_CTX = _words("aadhaar", "aadhar", "uid", "uidai")
@@ -198,8 +200,11 @@ DEFAULT_RECOGNIZERS: tuple[PatternRecognizer, ...] = (
         "date_of_birth",
         Entity.DATE_OF_BIRTH,
         re.compile(
-            r"(?<![\w/-])(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{4}|\d{1,2} " + _MONTH + r",? \d{4}|"
-            + _MONTH + r" \d{1,2},? \d{4})(?![\w/-])"
+            r"(?<![\w/-])(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{4}|\d{1,2} "
+            + _MONTH
+            + r",? \d{4}|"
+            + _MONTH
+            + r" \d{1,2},? \d{4})(?![\w/-])"
         ),
         0.15,
         v.date_of_birth,

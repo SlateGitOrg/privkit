@@ -18,12 +18,10 @@ def _digits(text: str) -> list[int]:
 def luhn_check_digit(body: str) -> int:
     """Check digit that makes ``body + digit`` pass the Luhn (mod 10) test."""
     total = 0
-    for i, d in enumerate(reversed(_digits(body))):
-        if i % 2 == 0:  # positions that get doubled once the check digit is appended
-            d *= 2
-            if d > 9:
-                d -= 9
-        total += d
+    for i, digit in enumerate(reversed(_digits(body))):
+        # Positions that get doubled once the check digit is appended.
+        value = digit * 2 if i % 2 == 0 else digit
+        total += value - 9 if value > 9 else value
     return (10 - total % 10) % 10
 
 

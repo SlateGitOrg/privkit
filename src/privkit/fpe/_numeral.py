@@ -57,10 +57,6 @@ def check_key(key: bytes) -> None:
         raise KeyMaterialError("AES key must be 16, 24 or 32 bytes")
 
 
-def ecb_encryptor(key: bytes) -> "_BlockCipher":
-    return _BlockCipher(key)
-
-
 class _BlockCipher:
     """A reusable AES single-block encryption primitive (CIPH_K in the standard)."""
 
@@ -71,7 +67,7 @@ class _BlockCipher:
         self._key = key
         # ECB over exactly one block is the raw block cipher; the context is
         # stateless between 16-byte updates so it can be reused.
-        self._enc = Cipher(algorithms.AES(key), modes.ECB()).encryptor()
+        self._enc = Cipher(algorithms.AES(key), modes.ECB()).encryptor()  # noqa: S305 - raw single-block AES
 
     def block(self, data: bytes) -> bytes:
         return self._enc.update(data)

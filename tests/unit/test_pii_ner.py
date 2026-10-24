@@ -56,7 +56,7 @@ def test_missing_spacy_raises(monkeypatch: pytest.MonkeyPatch) -> None:
     def fake_import(name: str) -> object:
         raise ImportError(name)
 
-    monkeypatch.setattr(ner_mod.importlib, "import_module", fake_import)
+    monkeypatch.setattr("privkit.pii.ner.importlib.import_module", fake_import)
     with pytest.raises(OptionalDependencyError):
         SpacyNerRecognizer()
     assert ner_available() is False
@@ -68,7 +68,7 @@ def test_missing_model_raises(monkeypatch: pytest.MonkeyPatch) -> None:
         def load(name: str, disable: list[str]) -> object:
             raise OSError(name)
 
-    monkeypatch.setattr(ner_mod.importlib, "import_module", lambda name: FakeSpacy)
+    monkeypatch.setattr("privkit.pii.ner.importlib.import_module", lambda name: FakeSpacy)
     with pytest.raises(OptionalDependencyError):
         ner_mod.load_spacy_model("nope")
 
@@ -79,6 +79,6 @@ def test_loads_model_via_spacy(monkeypatch: pytest.MonkeyPatch) -> None:
         def load(name: str, disable: list[str]) -> object:
             return FakeNlp()
 
-    monkeypatch.setattr(ner_mod.importlib, "import_module", lambda name: FakeSpacy)
+    monkeypatch.setattr("privkit.pii.ner.importlib.import_module", lambda name: FakeSpacy)
     assert ner_available("whatever")
     assert SpacyNerRecognizer(model="whatever").find("Denver")[0].entity == "LOCATION"

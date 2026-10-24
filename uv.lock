@@ -698,7 +698,6 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "cryptography" },
-    { name = "numpy" },
 ]
 
 [package.dev-dependencies]
@@ -712,10 +711,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "cryptography", specifier = ">=44" },
-    { name = "numpy", specifier = ">=2.1" },
-]
+requires-dist = [{ name = "cryptography", specifier = ">=44" }]
 provides-extras = ["ner"]
 
 [package.metadata.requires-dev]

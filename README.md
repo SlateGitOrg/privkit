@@ -281,7 +281,7 @@ output: `eval/results.json`.
 
 ```bash
 make cov          # pytest --cov --cov-fail-under=90
-# TOTAL ... 99%   (1456 passed, 1 skipped: the spaCy test when the model is absent)
+# TOTAL ... 99%   (1462 passed, 1 skipped: the spaCy test when the model is absent)
 ```
 
 ### Benchmarks

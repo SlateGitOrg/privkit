@@ -11,7 +11,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-ner = []
+# Optional NER. The English model is a separate wheel: `make ner-model`.
+ner = ["spacy>=3.8,<3.9"]
 
 [project.scripts]
 privkit = "privkit.cli:main"

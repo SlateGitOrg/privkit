@@ -142,3 +142,46 @@ def test_contribution_bounds_scale_noise() -> None:
     narrow = a.count([], epsilon=1.0, public_partitions=["x"])
     wide = a.count([], epsilon=1.0, public_partitions=["x"], bounds=ContributionBounds(4, 2))
     assert wide.partitions["x"].noise_std > 6 * narrow.partitions["x"].noise_std
+
+
+@pytest.mark.parametrize("noise", ["laplace", "gaussian"])
+@pytest.mark.parametrize("integer", [False, True])
+def test_sum_mechanism_does_not_depend_on_the_records(noise: str, integer: bool) -> None:
+    # Neighbouring datasets: D has only integer values, D' adds one user with a non-integer value.
+    # If the mechanism were chosen from the data, the output's integrality would reveal which one ran.
+    d = [(u, ALL, 3.0) for u in range(50)]
+    d_prime = [*d, (50, ALL, 2.5)]
+    kw = {"lower": 0, "upper": 10, "epsilon": 1.0, "delta": 1e-5, "noise": noise, "public_partitions": [ALL]}
+    seen = set()
+    for records in (d, d_prime):
+        res = agg().sum(records, integer=integer, **kw)  # type: ignore[arg-type]
+        seen.add(res.mechanisms)
+        value = res.partitions[ALL].value
+        if integer:
+            assert value.is_integer()
+    assert len(seen) == 1
+    expected = {
+        (False, "laplace"): ("laplace",),
+        (False, "gaussian"): ("gaussian",),
+        (True, "laplace"): ("discrete_laplace",),
+        (True, "gaussian"): ("discrete_gaussian",),
+    }[(integer, noise)]
+    assert seen == {expected}
+
+
+def test_continuous_sum_outputs_are_not_integer_on_integer_data() -> None:
+    # Default sums are continuous, so an integer result no longer signals "all values were integers".
+    d = [(u, ALL, 3.0) for u in range(50)]
+    values = [
+        agg(seed=s).sum(d, lower=0, upper=10, epsilon=1.0, public_partitions=[ALL]).partitions[ALL].value
+        for s in range(5)
+    ]
+    assert not any(v.is_integer() for v in values)
+
+
+def test_integer_sum_rounds_clamped_values_and_needs_integer_bounds() -> None:
+    records = [(0, ALL, 2.4), (1, ALL, 2.6), (2, ALL, 99.0)]
+    res = agg().sum(records, lower=0, upper=10, epsilon=100.0, public_partitions=[ALL], integer=True)
+    assert res.partitions[ALL].value == pytest.approx(2 + 3 + 10, abs=1)
+    with pytest.raises(ConfigurationError):
+        agg().sum(records, lower=0, upper=9.5, epsilon=1.0, public_partitions=[ALL], integer=True)

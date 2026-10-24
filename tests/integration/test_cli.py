@@ -209,6 +209,16 @@ def test_dp_errors(capsys: pytest.CaptureFixture[str], tmp_path: Path) -> None:
     code, out, _ = run(capsys, "dp", tx, "--metric", "sum", "--privacy-unit", "user_id", "--value", "amount",
                        "--lower", "0", "--upper", "100", "--epsilon", "1")  # fmt: skip
     assert code == 0 and "__all__" in out
+    code, out, _ = run(capsys, "dp", tx, "--metric", "sum", "--privacy-unit", "user_id", "--value", "amount",
+                       "--lower", "0", "--upper", "100", "--epsilon", "1", "--integer", "--json")  # fmt: skip
+    payload = json.loads(out)
+    assert (
+        code == 0 and payload["mechanisms"] == ["discrete_laplace"] and float(payload["rows"][0]["value"]).is_integer()
+    )
+    assert run(capsys, "dp", tx, "--metric", "mean", "--privacy-unit", "user_id", "--value", "amount",
+               "--lower", "0", "--upper", "100", "--epsilon", "1", "--integer")[0] == EXIT_ERROR  # fmt: skip
+    assert run(capsys, "dp", tx, "--metric", "sum", "--privacy-unit", "user_id", "--value", "amount",
+               "--lower", "0", "--upper", "99.5", "--epsilon", "1", "--integer")[0] == EXIT_ERROR  # fmt: skip
 
 
 def test_eval_command(capsys: pytest.CaptureFixture[str]) -> None:

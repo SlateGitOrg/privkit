@@ -272,13 +272,17 @@ def cmd_dp(args: argparse.Namespace) -> int:
         "public_partitions": public,
         "label": args.label or args.metric,
     }
+    if args.integer and args.metric != "sum":
+        raise ConfigurationError("--integer applies only to --metric sum")
     if args.metric == "count":
         res = agg.count(records, **common)
     else:
         if args.value is None or args.lower is None or args.upper is None:
             raise ConfigurationError(f"{args.metric} needs --value, --lower and --upper")
-        method = agg.sum if args.metric == "sum" else agg.mean
-        res = method(records, lower=args.lower, upper=args.upper, **common)
+        if args.metric == "sum":
+            res = agg.sum(records, lower=args.lower, upper=args.upper, integer=args.integer, **common)
+        else:
+            res = agg.mean(records, lower=args.lower, upper=args.upper, **common)
     if args.ledger:
         acct.save(Path(args.ledger))
     if args.json:
@@ -437,6 +441,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--value", help="numeric column for sum/mean")
     p.add_argument("--lower", type=float)
     p.add_argument("--upper", type=float)
+    p.add_argument(
+        "--integer",
+        action="store_true",
+        help="sum only: integer-valued query (integer bounds, values rounded) noised with the exact discrete sampler",
+    )
     p.add_argument("--epsilon", type=float, required=True)
     p.add_argument("--delta", type=float, default=0.0)
     p.add_argument("--noise", choices=["laplace", "gaussian"], default="laplace")

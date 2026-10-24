@@ -11,8 +11,11 @@ Pipeline for one query (count / sum / mean, optionally grouped by a key):
    (Laplace thresholding). This costs part of epsilon *and* needs delta > 0,
    because a key held by a single user would otherwise reveal that user.
 3. **Noisy aggregation.** Calibrated noise is added per released partition.
-   Integer-valued queries use the exact discrete samplers; real-valued ones use
-   the continuous mechanisms.
+   Counts, and sums declared ``integer=True`` (integer bounds; values are rounded
+   after clamping), use the exact discrete samplers; other sums and means use the
+   continuous mechanisms. The choice depends only on public parameters, never on
+   the records: if it depended on the data, the integrality of the output would
+   reveal it.
 4. **Accounting.** All charges for the query are recorded atomically in the
    :class:`PrivacyAccountant` *before* any noisy value is returned.
 
@@ -173,10 +176,20 @@ class DPAggregator:
         public_partitions: Sequence[Hashable] | None = None,
         selection_fraction: float = 1 / 3,
         label: str = "sum",
+        integer: bool = False,
     ) -> DPResult:
+        """Noisy sum of values clamped to ``[lower, upper]``.
+
+        ``integer=True`` declares an integer-valued query: ``lower`` and ``upper``
+        must be integers, each clamped value is rounded to the nearest integer, and
+        the exact discrete sampler is used. Otherwise the continuous mechanism is
+        used. The mechanism is fixed by these public arguments alone.
+        """
+        if integer and not (float(lower).is_integer() and float(upper).is_integer()):
+            raise ConfigurationError("integer=True needs integer lower and upper bounds")
         return self._run(
             Metric.SUM, records, epsilon, delta, NoiseFamily(noise), bounds or ContributionBounds(), (lower, upper),
-            public_partitions, selection_fraction, label,
+            public_partitions, selection_fraction, label, integer,
         )  # fmt: skip
 
     def mean(
@@ -224,6 +237,7 @@ class DPAggregator:
         public_partitions: Sequence[Hashable] | None,
         selection_fraction: float,
         label: str,
+        integer: bool = False,
     ) -> DPResult:
         PrivacyCost(epsilon, delta)  # validates ranges
         if epsilon <= 0:
@@ -260,6 +274,8 @@ class DPAggregator:
             units[part].add(unit)
             if metric is not Metric.COUNT:
                 clamped = min(max(value, lo), hi)
+                if integer:
+                    clamped = float(round(clamped))  # stays in [lo, hi] because the bounds are integers
                 sums[part] += clamped - mid if metric is Metric.MEAN else clamped
 
         l0, linf = bounds.max_partitions, bounds.max_per_partition
@@ -270,9 +286,7 @@ class DPAggregator:
             )
         elif metric is Metric.SUM:
             m = linf * max(abs(lo), abs(hi))
-            integer = (
-                float(lo).is_integer() and float(hi).is_integer() and all(float(v).is_integer() for _, _, v in kept)
-            )
+            # Decided from public arguments only (see module docstring); never from the records.
             mechs.append(("sum", self._mechanism(noise, eps_query, delta_query, l0 * m, math.sqrt(l0) * m, integer)))
         else:
             half = linf * (hi - lo) / 2

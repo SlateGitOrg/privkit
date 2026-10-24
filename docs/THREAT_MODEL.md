@@ -88,9 +88,10 @@ written for engineers deciding whether a privkit control is enough for a given d
 * **Control:** calibrated noise with bounded contributions and a budget accountant. See
   [DP_GUARANTEES.md](DP_GUARANTEES.md) for exactly what is and is not guaranteed.
 * **Implementation-level threats:**
-  * **Floating-point attacks** (Mironov 2012) on continuous Laplace sampling. Integer queries
-    use exact discrete samplers that avoid this. Real-valued sums and means still use
-    floating-point continuous noise. This is documented as a limitation.
+  * **Floating-point attacks** (Mironov 2012) on continuous Laplace sampling. Counts and sums
+    declared integer-valued (`--integer`) use exact discrete samplers that avoid this. The
+    sampler is chosen from public arguments only, so its choice leaks nothing. Real-valued
+    sums and means still use floating-point continuous noise. This is documented as a limitation.
   * **Predictable randomness.** The default RNG is `secrets.SystemRandom` (the OS CSPRNG).
     The seeded RNG behind `--insecure-seed` logs a warning on every use and must never be
     used for real releases.

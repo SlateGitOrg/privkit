@@ -194,8 +194,10 @@ Full list with rationale and cost-if-wrong: [DECISIONS.md](DECISIONS.md).
   structural validator must accept them, and context words (scoped to the sentence, and
   "consumed" by an intervening number) push weak patterns such as bare 9-digit numbers over
   the threshold. Findings never print their value in `repr()` or logs.
-- **DP: integer queries use exact discrete samplers** (no floating-point side channel);
-  real-valued sums use the continuous Laplace / analytic Gaussian with that caveat documented.
+- **DP: integer queries use exact discrete samplers** (no floating-point side channel):
+  counts always, sums when declared with `integer=True` / `--integer`. The sampler is picked
+  from public arguments only, never from the data. Real-valued sums use the continuous
+  Laplace / analytic Gaussian with that caveat documented.
 - **The accountant charges before it releases.** A refused query produces no noisy value and
   leaves no partial ledger entry. Multi-part queries (mean = count + sum, plus partition
   selection) are charged atomically.

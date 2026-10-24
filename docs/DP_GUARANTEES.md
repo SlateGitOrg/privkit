@@ -29,9 +29,14 @@ probability δ.
 4. **Post-processing immunity.** Rounding, clamping counts at zero, dividing a noisy sum by a
    noisy count and clamping means to the value range are all functions of DP outputs only,
    so they cannot weaken the guarantee.
-5. **Exactness for integer queries.** Counts and integer sums are noised with exact discrete
-   Laplace and discrete Gaussian samplers, which avoids the floating-point attacks on naive
-   continuous samplers.
+5. **Exactness for integer queries.** Counts, and sums declared integer-valued
+   (`integer=True` / `--integer`, which needs integer bounds and rounds each clamped value),
+   are noised with exact discrete Laplace and discrete Gaussian samplers, which avoids the
+   floating-point attacks on naive continuous samplers.
+6. **Mechanism choice is data-independent.** Which sampler runs (discrete or continuous) is
+   fixed by public arguments only: the metric, the noise family, the bounds and the
+   `integer` flag. It never depends on the records, so the form of the output (for example,
+   whether it is an integer) reveals nothing about any individual.
 
 ## What it does **not** guarantee
 
@@ -60,8 +65,8 @@ probability δ.
 * **Floating-point exactness for real-valued sums and means.** These use the continuous
   Laplace or Gaussian mechanism in IEEE-754 doubles. Their theoretical guarantee holds for
   ideal real arithmetic, and implementations are known to deviate (Mironov 2012). Prefer
-  integer-valued bounds (for example amounts in cents) so the exact discrete samplers are
-  used.
+  integer-valued data with integer bounds (for example amounts in cents) and pass
+  `integer=True` / `--integer` so the exact discrete samplers are used.
 * **Seeded runs.** `--insecure-seed` and `insecure_seeded_rng` make noise reproducible and
   therefore provide **no** privacy. They exist only for tests and demos.
 

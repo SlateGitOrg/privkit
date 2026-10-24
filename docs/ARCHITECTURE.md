@@ -211,8 +211,10 @@ records them only if that cost stays within budget. Otherwise it raises
    Mean splits the query budget in half between a count and a centered sum.
 3. **Sensitivity:** count L1 = L0·L∞ (L2 = √L0·L∞). Sum L1 = L0·L∞·max(|lo|, |hi|).
    Centered sum L1 = L0·L∞·(hi−lo)/2.
-4. **Mechanism choice:** Laplace family → discrete Laplace for integer-valued queries,
-   continuous Laplace otherwise. Gaussian family → discrete Gaussian or analytic Gaussian.
+4. **Mechanism choice:** Laplace family → discrete Laplace for counts and for sums declared
+   `integer=True` (integer bounds, values rounded after clamping), continuous Laplace
+   otherwise. Gaussian family → discrete Gaussian or analytic Gaussian on the same rule.
+   The choice uses public arguments only, never the records.
 5. **Charge** all parts atomically. Only then sample.
 6. **Partition selection:** release key p iff distinct_units(p) + Z ≥ 1 + k with
    Z ~ DLap(L0/ε_sel) and k the smallest integer with q^k/(1+q) ≤ δ_sel/L0, where

@@ -38,6 +38,7 @@ def _words(*words: str) -> frozenset[str]:
 
 _SEP = r"[ .\-]?"
 _CARD_CTX = _words("card", "credit", "debit", "visa", "mastercard", "amex", "cc", "pan", "payment", "paid", "charged")
+_CARD_NEG = _words("iban", "bban", "swift", "bic")
 _PHONE_CTX = _words("phone", "call", "tel", "telephone", "mobile", "cell", "fax", "sms", "text", "whatsapp", "contact")
 _SSN_CTX = _words("ssn", "social", "security", "ss", "taxpayer", "tin", "itin")
 _ABA_CTX = _words("routing", "aba", "rtn", "transit", "ach", "wire")
@@ -74,6 +75,7 @@ DEFAULT_RECOGNIZERS: tuple[PatternRecognizer, ...] = (
         0.8,
         v.credit_card,
         _CARD_CTX,
+        _CARD_NEG,
         context_boost=0.15,
     ),
     PatternRecognizer(

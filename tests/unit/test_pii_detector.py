@@ -51,6 +51,7 @@ def test_detects_each_entity(det: Detector, text: str, expected: tuple[str, str]
         "IBAN DE00 3704 0044 0532 0130 00",  # bad IBAN check digits
         "call 911 now",
         "Ref DE36 9563 0320 9872 5428 89",  # card-shaped digits inside an IBAN-like token
+        "IBAN DE34 6279 4224 5264 0145 09 failed",  # invalid IBAN whose digits pass Luhn as a UnionPay PAN
     ],
 )
 def test_hard_negatives(det: Detector, text: str) -> None:

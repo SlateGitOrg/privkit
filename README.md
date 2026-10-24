@@ -108,16 +108,16 @@ from privkit.pii import Tokenize
 from privkit.keys import key_from_env
 
 text = "Card 4111 1111 1111 1111, ssn 123-45-6789, mail ann.lee@example.com"
-findings = Detector().analyze(text)              # [Finding(entity='CREDIT_CARD', ...), ...]
+findings = Detector().analyze(text)  # [Finding(entity='CREDIT_CARD', ...), ...]
 
-tok = Tokenizer(key_from_env())                  # PRIVKIT_KEY
+tok = Tokenizer(key_from_env())  # PRIVKIT_KEY
 safe = anonymize(text, findings, default=Tokenize(tok, tagged=True)).text
 # 'Card [[CREDIT_CARD:7663 7791 0784 1111]], ssn [[US_SSN:073-06-9693]], mail [[EMAIL:RWr.Uec@example.com]]'
 # (token digits depend on the key; the last four card digits and the email domain are kept)
 
 acct = PrivacyAccountant(epsilon=1.0, delta=1e-5, composition="rdp")
-agg = DPAggregator(acct)                         # OS CSPRNG by default
-records = [("user-1", "north", 12.5), ("user-2", "south", 40.0)]   # (privacy unit, group, value)
+agg = DPAggregator(acct)  # OS CSPRNG by default
+records = [("user-1", "north", 12.5), ("user-2", "south", 40.0)]  # (privacy unit, group, value)
 res = agg.mean(records, lower=0, upper=200, epsilon=0.4, public_partitions=["north", "south"])
 print(res.to_rows(), acct.remaining())
 ```

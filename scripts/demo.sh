@@ -12,10 +12,11 @@ export PRIVKIT_KEY=000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1
 PK="uv run --quiet privkit"
 
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
-run() { printf '$ privkit %s\n' "$*"; $PK "$@"; }
+say() { printf '$ privkit %s\n' "$*"; }
+run() { say "$@"; $PK "$@"; }
 
 step "1. Detect PII in support tickets (values hidden by default)"
-run scan "$FIX/support_tickets.txt" | tail -n 8
+run scan "$FIX/support_tickets.txt"
 
 step "2. Reversible tokenization of free text, then exact round trip"
 run redact "$FIX/support_tickets.txt" --mode tokenize --tagged -o "$OUT/tickets.tokenized.txt"
@@ -24,7 +25,8 @@ run detokenize "$OUT/tickets.tokenized.txt" -o "$OUT/tickets.restored.txt"
 cmp -s "$FIX/support_tickets.txt" "$OUT/tickets.restored.txt" && echo "round trip: restored text is byte-identical"
 
 step "3. Irreversible masking for logs"
-run redact "$FIX/support_tickets.txt" --mode mask | sed -n '2p'
+say redact "$FIX/support_tickets.txt" --mode mask
+$PK redact "$FIX/support_tickets.txt" --mode mask | sed -n '2p'
 
 step "4. Find PII columns in a table"
 run scan-table "$FIX/customers.csv" --sample 500

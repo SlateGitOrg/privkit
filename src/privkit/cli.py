@@ -7,6 +7,7 @@ Exit codes: 0 success, 2 usage/configuration/input error, 3 findings present
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import logging
 import sys
@@ -129,18 +130,9 @@ def _column_policies(spec: str, algorithm: Algorithm) -> dict[str, TokenPolicy]:
         column, _, policy_name = item.partition("=")
         if policy_name not in DEFAULT_POLICIES:
             raise ConfigurationError(f"unknown policy {policy_name!r}; known: {', '.join(sorted(DEFAULT_POLICIES))}")
-        base = DEFAULT_POLICIES[policy_name]
-        # Policy name = column name, so each column gets its own derived key.
-        policies[column] = TokenPolicy(
-            name=f"{policy_name}@{column}",
-            alphabet=base.alphabet,
-            algorithm=algorithm,
-            codec=base.codec,
-            keep_prefix=base.keep_prefix,
-            keep_suffix=base.keep_suffix,
-            luhn=base.luhn,
-            span_pattern=base.span_pattern,
-            normalize=base.normalize,
+        # The policy name includes the column, so each column gets its own derived key.
+        policies[column] = dataclasses.replace(
+            DEFAULT_POLICIES[policy_name], name=f"{policy_name}@{column}", algorithm=algorithm
         )
     if not policies:
         raise ConfigurationError("give --columns like card=CREDIT_CARD,ssn=US_SSN")

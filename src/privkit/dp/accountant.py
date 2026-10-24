@@ -180,12 +180,15 @@ class PrivacyAccountant:
         charges = data.get("charges", [])
         if not isinstance(budget, dict) or not isinstance(charges, list):
             raise ConfigurationError("malformed accountant state")
-        return cls(
-            float(budget["epsilon"]),
-            float(budget.get("delta", 0.0)),
-            str(data.get("composition", "basic")),
-            charges=[Charge.from_dict(c) for c in charges],
-        )
+        try:
+            return cls(
+                float(budget["epsilon"]),
+                float(budget.get("delta", 0.0)),
+                str(data.get("composition", "basic")),
+                charges=[Charge.from_dict(c) for c in charges],
+            )
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ConfigurationError(f"malformed accountant state: {exc!r}") from None
 
     def save(self, path: Path) -> None:
         tmp = path.with_suffix(path.suffix + ".tmp")

@@ -107,6 +107,9 @@ def test_persistence_roundtrip(tmp_path: Path) -> None:
         "not json",
         "[]",
         '{"budget": 3}',
+        '{"budget": {}}',
+        '{"budget": {"epsilon": 1}, "composition": "nope"}',
+        '{"budget": {"epsilon": 1}, "charges": [{"label": "x"}]}',
         '{"budget": {"epsilon": 1}, "charges": [{"label": "x", "mechanism": "m", "epsilon": "a", "delta": 0}]}',
     ],
 )

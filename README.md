@@ -306,7 +306,7 @@ of CBC-MAC.
 
 ```bash
 make loc
-# non-test source lines (src/privkit, excluding blanks and comments): 3896
+# non-test source lines (src/privkit, excluding blanks and comments): 3891
 ```
 
 ## Limitations

@@ -1,0 +1,506 @@
+{
+  "docs_per_split": 2000,
+  "seed": 2026,
+  "runs": [
+    {
+      "split": "dev",
+      "detector": "regex+checksum",
+      "seconds": 0.136,
+      "n_docs": 2000,
+      "micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 3746,
+        "fp": 0,
+        "fn": 0,
+        "support": 3746
+      },
+      "per_entity": {
+        "CREDIT_CARD": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 311,
+          "fp": 0,
+          "fn": 0,
+          "support": 311
+        },
+        "DATE_OF_BIRTH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 307,
+          "fp": 0,
+          "fn": 0,
+          "support": 307
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 900,
+          "fp": 0,
+          "fn": 0,
+          "support": 900
+        },
+        "IBAN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 145,
+          "fp": 0,
+          "fn": 0,
+          "support": 145
+        },
+        "IN_AADHAAR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 142,
+          "fp": 0,
+          "fn": 0,
+          "support": 142
+        },
+        "IP_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 415,
+          "fp": 0,
+          "fn": 0,
+          "support": 415
+        },
+        "MAC_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 152,
+          "fp": 0,
+          "fn": 0,
+          "support": 152
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 619,
+          "fp": 0,
+          "fn": 0,
+          "support": 619
+        },
+        "UK_NHS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 155,
+          "fp": 0,
+          "fn": 0,
+          "support": 155
+        },
+        "US_ABA_ROUTING": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 152,
+          "fp": 0,
+          "fn": 0,
+          "support": 152
+        },
+        "US_SSN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 448,
+          "fp": 0,
+          "fn": 0,
+          "support": 448
+        }
+      }
+    },
+    {
+      "split": "dev",
+      "detector": "regex+checksum+spacy",
+      "seconds": 8.446,
+      "n_docs": 2000,
+      "micro": {
+        "precision": 0.9808,
+        "recall": 0.9743,
+        "f1": 0.9776,
+        "tp": 5013,
+        "fp": 98,
+        "fn": 132,
+        "support": 5145
+      },
+      "per_entity": {
+        "CREDIT_CARD": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 311,
+          "fp": 0,
+          "fn": 0,
+          "support": 311
+        },
+        "DATE_OF_BIRTH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 307,
+          "fp": 0,
+          "fn": 0,
+          "support": 307
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 900,
+          "fp": 0,
+          "fn": 0,
+          "support": 900
+        },
+        "IBAN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 145,
+          "fp": 0,
+          "fn": 0,
+          "support": 145
+        },
+        "IN_AADHAAR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 142,
+          "fp": 0,
+          "fn": 0,
+          "support": 142
+        },
+        "IP_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 415,
+          "fp": 0,
+          "fn": 0,
+          "support": 415
+        },
+        "LOCATION": {
+          "precision": 0.9641,
+          "recall": 0.935,
+          "f1": 0.9493,
+          "tp": 590,
+          "fp": 22,
+          "fn": 41,
+          "support": 631
+        },
+        "MAC_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 152,
+          "fp": 0,
+          "fn": 0,
+          "support": 152
+        },
+        "PERSON": {
+          "precision": 0.8991,
+          "recall": 0.8815,
+          "f1": 0.8902,
+          "tp": 677,
+          "fp": 76,
+          "fn": 91,
+          "support": 768
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 619,
+          "fp": 0,
+          "fn": 0,
+          "support": 619
+        },
+        "UK_NHS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 155,
+          "fp": 0,
+          "fn": 0,
+          "support": 155
+        },
+        "US_ABA_ROUTING": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 152,
+          "fp": 0,
+          "fn": 0,
+          "support": 152
+        },
+        "US_SSN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 448,
+          "fp": 0,
+          "fn": 0,
+          "support": 448
+        }
+      }
+    },
+    {
+      "split": "test",
+      "detector": "regex+checksum",
+      "seconds": 0.144,
+      "n_docs": 2000,
+      "micro": {
+        "precision": 0.9997,
+        "recall": 1.0,
+        "f1": 0.9999,
+        "tp": 3781,
+        "fp": 1,
+        "fn": 0,
+        "support": 3781
+      },
+      "per_entity": {
+        "CREDIT_CARD": {
+          "precision": 0.9978,
+          "recall": 1.0,
+          "f1": 0.9989,
+          "tp": 464,
+          "fp": 1,
+          "fn": 0,
+          "support": 464
+        },
+        "DATE_OF_BIRTH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 292,
+          "fp": 0,
+          "fn": 0,
+          "support": 292
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 625,
+          "fp": 0,
+          "fn": 0,
+          "support": 625
+        },
+        "IBAN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 295,
+          "fp": 0,
+          "fn": 0,
+          "support": 295
+        },
+        "IN_AADHAAR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 135,
+          "fp": 0,
+          "fn": 0,
+          "support": 135
+        },
+        "IP_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 648,
+          "fp": 0,
+          "fn": 0,
+          "support": 648
+        },
+        "MAC_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 135,
+          "fp": 0,
+          "fn": 0,
+          "support": 135
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 441,
+          "fp": 0,
+          "fn": 0,
+          "support": 441
+        },
+        "UK_NHS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 134,
+          "fp": 0,
+          "fn": 0,
+          "support": 134
+        },
+        "US_ABA_ROUTING": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 170,
+          "fp": 0,
+          "fn": 0,
+          "support": 170
+        },
+        "US_SSN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 442,
+          "fp": 0,
+          "fn": 0,
+          "support": 442
+        }
+      }
+    },
+    {
+      "split": "test",
+      "detector": "regex+checksum+spacy",
+      "seconds": 8.845,
+      "n_docs": 2000,
+      "micro": {
+        "precision": 0.9267,
+        "recall": 0.9308,
+        "f1": 0.9288,
+        "tp": 4896,
+        "fp": 387,
+        "fn": 364,
+        "support": 5260
+      },
+      "per_entity": {
+        "CREDIT_CARD": {
+          "precision": 0.9978,
+          "recall": 1.0,
+          "f1": 0.9989,
+          "tp": 464,
+          "fp": 1,
+          "fn": 0,
+          "support": 464
+        },
+        "DATE_OF_BIRTH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 292,
+          "fp": 0,
+          "fn": 0,
+          "support": 292
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 625,
+          "fp": 0,
+          "fn": 0,
+          "support": 625
+        },
+        "IBAN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 295,
+          "fp": 0,
+          "fn": 0,
+          "support": 295
+        },
+        "IN_AADHAAR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 135,
+          "fp": 0,
+          "fn": 0,
+          "support": 135
+        },
+        "IP_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 648,
+          "fp": 0,
+          "fn": 0,
+          "support": 648
+        },
+        "LOCATION": {
+          "precision": 0.9745,
+          "recall": 0.9674,
+          "f1": 0.9709,
+          "tp": 534,
+          "fp": 14,
+          "fn": 18,
+          "support": 552
+        },
+        "MAC_ADDRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 135,
+          "fp": 0,
+          "fn": 0,
+          "support": 135
+        },
+        "PERSON": {
+          "precision": 0.6097,
+          "recall": 0.6268,
+          "f1": 0.6181,
+          "tp": 581,
+          "fp": 372,
+          "fn": 346,
+          "support": 927
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 441,
+          "fp": 0,
+          "fn": 0,
+          "support": 441
+        },
+        "UK_NHS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 134,
+          "fp": 0,
+          "fn": 0,
+          "support": 134
+        },
+        "US_ABA_ROUTING": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 170,
+          "fp": 0,
+          "fn": 0,
+          "support": 170
+        },
+        "US_SSN": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 442,
+          "fp": 0,
+          "fn": 0,
+          "support": 442
+        }
+      }
+    }
+  ]
+}

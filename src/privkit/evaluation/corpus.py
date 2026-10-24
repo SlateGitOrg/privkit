@@ -126,8 +126,8 @@ TEST_TEMPLATES = [
 _SLOT = re.compile(r"\{([A-Z0-9_]+)\}")
 
 
-class _Values:
-    """Generators for valid identifiers and hard negatives."""
+class SyntheticValues:
+    """Generators for valid-by-construction identifiers and hard negatives (all fabricated)."""
 
     def __init__(self, rng: random.Random, split: Split) -> None:
         self.r = rng
@@ -315,7 +315,7 @@ _SLOTS: dict[str, tuple[str | None, str]] = {
 }
 
 
-def _fill(template: str, values: _Values) -> tuple[str, list[Span]]:
+def _fill(template: str, values: SyntheticValues) -> tuple[str, list[Span]]:
     out: list[str] = []
     spans: list[Span] = []
     cursor = 0
@@ -341,11 +341,11 @@ def generate_corpus(split: Split, n_docs: int, seed: int) -> list[Document]:
     if split not in ("dev", "test"):
         raise ValueError("split must be 'dev' or 'test'")
     rng = random.Random(f"privkit-corpus|{split}|{seed}")
-    values = _Values(rng, split)
+    values = SyntheticValues(rng, split)
     templates = DEV_TEMPLATES if split == "dev" else TEST_TEMPLATES
     docs = []
     for i in range(n_docs):
-        text, spans = "", []
+        text, spans = "", list[Span]()
         for _ in range(rng.randint(1, 3)):
             sentence, sentence_spans = _fill(rng.choice(templates), values)
             offset = len(text) + (1 if text else 0)

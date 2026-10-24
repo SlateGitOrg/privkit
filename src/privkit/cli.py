@@ -257,11 +257,8 @@ def _result_payload(res: DPResult, acct: PrivacyAccountant) -> dict[str, object]
 def cmd_dp(args: argparse.Namespace) -> int:
     rows, _ = read_rows(args.input, args.format)
     acct = _load_accountant(args)
-    if args.insecure_seed is not None:
-        rng = insecure_seeded_rng(args.insecure_seed)
-        sys.stderr.write("WARNING: --insecure-seed makes the noise reproducible; the output is NOT private.\n")
-    else:
-        rng = secure_rng()
+    # A seeded RNG (demo/testing only) logs a NOT-private warning.
+    rng = insecure_seeded_rng(args.insecure_seed) if args.insecure_seed is not None else secure_rng()
     agg = DPAggregator(acct, rng)
     records = []
     for i, row in enumerate(rows):
@@ -484,9 +481,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG if args.verbose > 1 else logging.INFO, stream=sys.stderr,
-                            format="%(levelname)s %(name)s: %(message)s")  # fmt: skip
+    level = {0: logging.WARNING, 1: logging.INFO}.get(args.verbose, logging.DEBUG)
+    logging.basicConfig(level=level, stream=sys.stderr, format="privkit: %(levelname)s: %(message)s")
+    logging.getLogger("privkit").setLevel(level)
     try:
         code: int = args.func(args)
     except BudgetExceededError as exc:

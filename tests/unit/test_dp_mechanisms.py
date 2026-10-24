@@ -111,5 +111,5 @@ def test_rng_helpers(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level(logging.WARNING)
     r = insecure_seeded_rng(5)
     assert r.random() == random.Random(5).random()
-    assert "NO privacy" in caplog.text
+    assert "NOT private" in caplog.text
     assert secure_rng().random() != secure_rng().random()

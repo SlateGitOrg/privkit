@@ -285,7 +285,9 @@ class DPAggregator:
         if select:
             selection = selection_threshold(eps_sel, delta_sel, l0)
             charges.append(Charge(f"{label}:partition_selection", "laplace_threshold", PrivacyCost(eps_sel, delta_sel)))
-        cost = self.accountant.charge(*charges)  # raises before any noisy value exists
+        self.accountant.charge(*charges)  # raises before any noisy value exists
+        # This query's own cost under basic composition (the accountant may compose the total more tightly).
+        cost = PrivacyCost(math.fsum(c.cost.epsilon for c in charges), math.fsum(c.cost.delta for c in charges))
 
         if selection is not None:
             sel_scale, sel_k = selection

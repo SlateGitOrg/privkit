@@ -162,7 +162,9 @@ def test_kanon_report_generalize_and_mondrian(capsys: pytest.CaptureFixture[str]
     assert run(capsys, "kanon", f, "--qi", "age", "-k", "5", "--generalize", "nonsense")[0] == EXIT_ERROR
 
 
-def test_dp_queries_with_ledger(capsys: pytest.CaptureFixture[str], tmp_path: Path) -> None:
+def test_dp_queries_with_ledger(
+    capsys: pytest.CaptureFixture[str], caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
     ledger = tmp_path / "ledger.json"
     tx = str(FIX / "transactions.csv")
     assert (
@@ -174,7 +176,7 @@ def test_dp_queries_with_ledger(capsys: pytest.CaptureFixture[str], tmp_path: Pa
                          "--epsilon", "0.3", "--delta", "1e-6", "--max-partitions", "2", "--ledger", str(ledger),
                          "--insecure-seed", "7", "--json")  # fmt: skip
     payload = json.loads(out)
-    assert code == 0 and "NOT private" in err and payload["private_partition_selection"]
+    assert code == 0 and "NOT private" in caplog.text and payload["private_partition_selection"]
     assert {r["partition"] for r in payload["rows"]} == {"north", "south", "east", "west"}
     code, out, _ = run(capsys, "dp", tx, "--metric", "mean", "--privacy-unit", "user_id", "--value", "amount",
                        "--lower", "0", "--upper", "200", "--epsilon", "0.4", "--ledger", str(ledger),

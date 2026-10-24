@@ -20,5 +20,5 @@ def secure_rng() -> random.Random:
 
 def insecure_seeded_rng(seed: int) -> random.Random:
     """Deterministic RNG for tests and demos. Never use it for real releases."""
-    logger.warning("using a seeded RNG: DP noise is reproducible and offers NO privacy")
+    logger.warning("seeded RNG in use: DP noise is reproducible and the output is NOT private")
     return random.Random(seed)

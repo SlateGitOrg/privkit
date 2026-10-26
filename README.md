@@ -1,5 +1,7 @@
 # privkit
 
+[![CI](https://github.com/SlateGitOrg/privkit/actions/workflows/ci.yml/badge.svg)](https://github.com/SlateGitOrg/privkit/actions/workflows/ci.yml)
+
 A privacy toolkit for data pipelines, in Python. It covers four jobs that usually
 need four separate tools:
 
@@ -9,6 +11,10 @@ need four separate tools:
 | **Tokenize** | Vaultless format-preserving tokens with **NIST SP 800-38G FF1 and FF3-1**, implemented from the standard and checked against NIST vectors. Per-field keys via HKDF, Luhn-aware card tokens, IP-address codec, tagged tokens for free text. | yes, with the key |
 | **Measure re-identification risk** | k-anonymity, distinct/entropy l-diversity, t-closeness, prosecutor risk; anonymize with minimum-loss full-domain generalization or Mondrian. | no |
 | **Release aggregates with differential privacy** | Laplace / Gaussian mechanisms (exact discrete samplers for integer queries, analytic Gaussian calibration), bounded user contributions, private partition selection, and a privacy-budget accountant with basic / advanced / RDP composition and a persistent JSON ledger. | no |
+
+## Why
+
+PII leaves trusted zones through logs, exports and analytics tables, and the usual fixes are scattered: a regex scrubber here, a hashing script there, ad-hoc noise on a dashboard. privkit puts detection, reversible tokenization, re-identification risk checks and budgeted differential privacy behind one typed API and one CLI, with each primitive implemented from its spec and tested against published vectors or statistical checks.
 
 It ships as a typed library (`import privkit`) and a CLI (`privkit ...`).
 
@@ -340,8 +346,33 @@ make loc
   taxonomies.
 - **Pure Python.** It is fast enough for batch jobs of millions of cells, not for
   high-throughput streaming.
-- **CI is configured but has not run.** `.github/workflows/ci.yml` runs the same gates. It
-  has not executed because the repository has not been pushed.
+
+## Testing
+
+```bash
+make check    # ruff format + lint, mypy --strict, pytest with coverage >= 90%
+make test     # pytest only (unit, integration, NIST vectors)
+```
+
+Unit tests cover FPE vectors, DP sampler distributions, the detector, k-anonymity and the
+accountant; `tests/integration/test_cli.py` drives the CLI end to end.
+
+## Project layout
+
+```text
+src/privkit/
+  pii/          detector, recognizers, validators, anonymize, column scanning
+  fpe/          FF1 and FF3-1 (SP 800-38G)
+  tokens.py     policy-driven tokenizer on top of fpe
+  kanon/        k-anonymity metrics, generalization, Mondrian
+  dp/           mechanisms, exact samplers, accountant, aggregates
+  evaluation/   synthetic corpus and metrics
+  cli.py        privkit command
+tests/          unit, integration, NIST vectors
+scripts/        demo, benchmarks, detector evaluation
+examples/       synthetic fixtures
+docs/           architecture, DP guarantees, threat model
+```
 
 ## Roadmap
 
@@ -354,4 +385,4 @@ make loc
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).

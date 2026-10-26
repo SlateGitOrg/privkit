@@ -5,7 +5,7 @@ description = "Privacy toolkit for data pipelines: PII detection, format-preserv
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
-authors = [{ name = "archit2501" }]
+authors = [{ name = "privkit contributors" }]
 dependencies = [
     "cryptography>=44",
 ]
